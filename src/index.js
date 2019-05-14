@@ -1,5 +1,5 @@
 import { createAppContainer, createStackNavigator,  createSwitchNavigator } from "react-navigation";
-import Login from "./pages/login";
+import Login from "./Pages/Login.js";
 
 
 const AuthStack = createStackNavigator({ Login});

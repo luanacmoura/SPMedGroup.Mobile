@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http:// 192.168.3.93:5000/api"
+  baseURL: "https://spmedgroupwebapi.azurewebsites.net/api"
 });
 
 export default api;
