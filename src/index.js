@@ -1,18 +1,13 @@
 import { createAppContainer, createStackNavigator,  createSwitchNavigator } from "react-navigation";
-
-import Login from "./pages/Login";
-import ListardoMedico from "./pages/ListardoMedico";
-import ListardoPaciente from "./pages/ListardoPaciente";
+import Login from "./pages/login";
 
 
-const AuthStack = createStackNavigator({ Login });
-const Listas = createStackNavigator({ListardoMedico, ListardoPaciente});
+const AuthStack = createStackNavigator({ Login});
 
-const MainNavigator = createAppContainer(
+export default createAppContainer(
     createSwitchNavigator(
       {
-        Listas,
-        AuthStack,
+        AuthStack
       },
       {
         initialRouteName: "AuthStack"
