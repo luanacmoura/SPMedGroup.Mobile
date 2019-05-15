@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Input } from 'react-native-elements';
 import api from "../services/api";
 import {Text, StyleSheet, ImageBackground, View, Image, TextInput, TouchableOpacity, AsyncStorage} from 'react-native';
-import { whileStatement } from "@babel/types";
 
 class Login extends Component {
     static navigationOptions = {
@@ -32,17 +33,22 @@ class Login extends Component {
                     <View style={styles.overlay} />
                     
                     <View style={styles.main}>
-                        <Image source={require("../assets/img/logored.png")}
+                        <Image source={require("../assets/img/logowhite.png")}
                         style={styles.mainIcon}/>
                     
                         <View style={styles.inputLogin}>
-                            <TextInput style = {styles.inputindividual} placeholderTextColor="#FFFFFF" placeholder="Insira seu email" onChangeText={email => this.setState({ email })}/>
 
-                            <TextInput secureTextEntry={true} style = {styles.inputindividual} placeholderTextColor="#FFFFFF" password="true" placeholder="Insira sua senha" onChangeText={senha => this.setState({ senha })}/>
-                        </View>
+                            <Input textColor="#666666" placeholderTextColor="#666666" placeholder="Insira seu email" onChangeText={email => this.setState({ email })}
+                            leftIcon={
+                                <Icon name="email-outline" size={25} color="#8c8c8c" />
+                            }/>
 
-                        <View style={styles.loginbtn}>
-                            <TouchableOpacity onPress={this._realizarLogin}>
+                            <Input  secureTextEntry={true} textColor="#666666" placeholderTextColor="#666666" password="true" placeholder="Insira sua senha" onChangeText={senha => this.setState({ senha })}
+                            leftIcon={
+                                <Icon name="lock-outline" size={25} color="#8c8c8c" />
+                            }/>
+
+                            <TouchableOpacity style={styles.loginbtn} onPress={this._realizarLogin} >
                                 <Text style={styles.logintext}>ENTRAR</Text>
                             </TouchableOpacity>
                         </View>
@@ -65,34 +71,26 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     mainIcon: {
-        height: "30%",
-        width: "50%",
+        height: "20%",
+        width: "40%",
         margin: 10
     },
     inputLogin: {
-        width: 240,
+        width: "85%",
+        backgroundColor:"#ffffff",
+        borderRadius:10,
         marginTop: 30,
         marginBottom: 10,
         fontSize: 20,
-        color: "#FFFFFF"
-    },
-    inputindividual :{
-        marginTop:25,
-        opacity:.85,
-        backgroundColor:"#C5683E",
-        borderColor:"#ffffff",
-        borderWidth:2,
-        borderRadius:30,
-        paddingLeft:15,
-        paddingRight:15,
-        height:50,
-        color:"#ffffff"
+        color: "#FFFFFF",
+        padding:10
     },
     loginbtn: {
         marginTop: 50,
-        backgroundColor:"#C5683E",
-        width: 240,
-        borderRadius:30,
+        marginBottom:15,
+        backgroundColor:"#c6603e",
+        width: "100%",
+        borderRadius:5,
         padding:15
     },
     logintext: {
