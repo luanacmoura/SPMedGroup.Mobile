@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Icon from 'react-native-vector-icons/EvilIcons';
+import jwt from "jwt-decode";
 import { ThemeProvider, Input } from 'react-native-elements';
 import api from "../services/api";
 import {Text, StyleSheet, ImageBackground, View, Image, TouchableOpacity, AsyncStorage, StatusBar} from 'react-native';
@@ -22,8 +23,16 @@ class Login extends Component {
         });
     
         const token = resposta.data.token;        
-        console.warn(token);
         await AsyncStorage.setItem("userToken", token);
+        const tipousuario = jwt(token).Role;
+
+        if (tipousuario == 2) {
+            this.props.navigation.navigate("ListarM");
+        }
+        else if (tipousuario == 3) {
+            this.props.navigation.navigate("ListarP");
+        }
+        //Fazer uma tela pra listar todas as consultas
       };
 
     render() {
@@ -36,6 +45,8 @@ class Login extends Component {
                     <StatusBar backgroundColor="#651428" barStyle="light-content" />
                         <Image source={require("../assets/img/logowhite.png")}
                         style={styles.mainIcon}/>
+
+                        <Text> Suas consultas em um só lugar! </Text>
                     
                         <View style={styles.inputLogin}>
                             <ThemeProvider theme={theme}>
@@ -99,7 +110,7 @@ const styles = StyleSheet.create({
         width: "85%",
         marginTop: 30,
         marginBottom: 10,
-        fontSize: 20,
+        fontSize: 15,
         color: "#FFFFFF",
         padding:10,
     },
