@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Input } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/EvilIcons';
+import { ThemeProvider, Input } from 'react-native-elements';
 import api from "../services/api";
-import {Text, StyleSheet, ImageBackground, View, Image, TextInput, TouchableOpacity, AsyncStorage} from 'react-native';
+import {Text, StyleSheet, ImageBackground, View, Image, TouchableOpacity, AsyncStorage, StatusBar} from 'react-native';
 
 class Login extends Component {
     static navigationOptions = {
@@ -28,26 +28,27 @@ class Login extends Component {
 
     render() {
         return (
-            <ImageBackground source={require("../assets/img/Bg-login.png")}
+            <ImageBackground source={require("../assets/img/Bg-login6.png")}
                 style={StyleSheet.absoluteFillObject}>
                     <View style={styles.overlay} />
                     
                     <View style={styles.main}>
+                    <StatusBar backgroundColor="#a2747e" barStyle="light-content" />
                         <Image source={require("../assets/img/logowhite.png")}
                         style={styles.mainIcon}/>
                     
                         <View style={styles.inputLogin}>
+                            <ThemeProvider theme={theme}>
+                                <Input shake={true}  color="#ffffffe6" placeholderTextColor="#ffffffe6" placeholder="Email" onChangeText={email => this.setState({ email })}
+                                leftIcon={
+                                    <Icon name="envelope" size={30} color="#ffffff80" />
+                                }/>
 
-                            <Input textColor="#666666" placeholderTextColor="#666666" placeholder="Insira seu email" onChangeText={email => this.setState({ email })}
-                            leftIcon={
-                                <Icon name="email-outline" size={25} color="#8c8c8c" />
-                            }/>
-
-                            <Input  secureTextEntry={true} textColor="#666666" placeholderTextColor="#666666" password="true" placeholder="Insira sua senha" onChangeText={senha => this.setState({ senha })}
-                            leftIcon={
-                                <Icon name="lock-outline" size={25} color="#8c8c8c" />
-                            }/>
-
+                                <Input  secureTextEntry={true}  placeholderTextColor="#ffffff" password="true" placeholder="Senha" onChangeText={senha => this.setState({ senha })}
+                                leftIcon={
+                                    <Icon name="lock" size={30} color="#ffffff80"  textAlign="center"/>
+                                }/>
+                            </ThemeProvider>
                             <TouchableOpacity style={styles.loginbtn} onPress={this._realizarLogin} >
                                 <Text style={styles.logintext}>ENTRAR</Text>
                             </TouchableOpacity>
@@ -58,6 +59,24 @@ class Login extends Component {
         );
     }   
 }
+
+const theme = {
+    Input: {
+      containerStyle: {
+        marginTop: 10,
+        marginBottom:10,
+        backgroundColor: '#ffffff33',
+        borderRadius:25,
+        paddingHorizontal:0
+      },
+      inputStyle: {
+          color:"white"
+      },
+      inputContainerStyle: {
+          borderColor:"#ffffff00",
+      }
+    }
+  }
 
 const styles = StyleSheet.create({
     overlay: {
@@ -71,26 +90,25 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     mainIcon: {
-        height: "20%",
+        height: "21%",
         width: "40%",
         margin: 10
     },
     inputLogin: {
         width: "85%",
-        backgroundColor:"#ffffff",
-        borderRadius:10,
         marginTop: 30,
         marginBottom: 10,
         fontSize: 20,
         color: "#FFFFFF",
-        padding:10
+        padding:10,
     },
     loginbtn: {
         marginTop: 50,
         marginBottom:15,
-        backgroundColor:"#c6603e",
         width: "100%",
-        borderRadius:5,
+        borderWidth:1.5,
+        borderColor:"#ffffff33",
+        borderRadius:25,
         padding:15
     },
     logintext: {
