@@ -28,12 +28,12 @@ class Login extends Component {
 
     render() {
         return (
-            <ImageBackground source={require("../assets/img/Bg-login6.png")}
+            <ImageBackground source={require("../assets/img/Bg-login9.png")}
                 style={StyleSheet.absoluteFillObject}>
                     <View style={styles.overlay} />
                     
                     <View style={styles.main}>
-                    <StatusBar backgroundColor="#a2747e" barStyle="light-content" />
+                    <StatusBar backgroundColor="#651428" barStyle="light-content" />
                         <Image source={require("../assets/img/logowhite.png")}
                         style={styles.mainIcon}/>
                     
@@ -70,7 +70,8 @@ const theme = {
         paddingHorizontal:0
       },
       inputStyle: {
-          color:"white"
+          color:"white",
+          fontFamily:"Kodchasan-Light"
       },
       inputContainerStyle: {
           borderColor:"#ffffff00",
@@ -114,6 +115,7 @@ const styles = StyleSheet.create({
     logintext: {
         color: "#FFFFFF",
         textAlign:"center",
+        fontFamily:"Kodchasan-Light"
     }
 });
 
