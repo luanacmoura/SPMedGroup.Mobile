@@ -4,6 +4,7 @@ import jwt from "jwt-decode";
 import { ThemeProvider, Input } from 'react-native-elements';
 import api from "../services/api";
 import {Text, StyleSheet, ImageBackground, View, Image, TouchableOpacity, AsyncStorage, StatusBar} from 'react-native';
+import console = require("console");
 
 class Login extends Component {
     static navigationOptions = {
@@ -12,28 +13,38 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { email: "", senha: "" };
-      }
-    
-      _realizarLogin = async () => {
-    
-        const resposta = await api.post("/login", {
-          email: this.state.email,
-          senha: this.state.senha
-        });
-    
-        const token = resposta.data.token;        
-        await AsyncStorage.setItem("userToken", token);
-        const tipousuario = jwt(token).Role;
+        this.state = { email: "", senha: "", error:"" };
+    }
 
-        if (tipousuario == 2) {
-            this.props.navigation.navigate("ListarM");
+      _realizarLogin = async () => {
+        if (this.state.email.length === 0 || this.state.senha.length === 0) {
+            this.setState({ error: "Preencha usuário e senha para continuar!" });
+          }
+        else { 
+            try {
+                const resposta = await api.post("/login", {
+                email: this.state.email,
+                senha: this.state.senha
+                })
+
+                const token = resposta.data.token;        
+                await AsyncStorage.setItem("userToken", token);
+                const tipousuario = jwt(token).Role;
+
+                if (tipousuario == 2) {
+                    this.props.navigation.navigate("ListarM");
+                }
+                else if (tipousuario == 3) {
+                    this.props.navigation.navigate("ListarP");
+                }
+                //Fazer uma tela pra listar todas as consultas pro administrador
+            }
+        
+        catch {
+                this.setState({ error : "Email ou senha inválidos!"});
         }
-        else if (tipousuario == 3) {
-            this.props.navigation.navigate("ListarP");
-        }
-        //Fazer uma tela pra listar todas as consultas
-      };
+    }
+        };
 
     render() {
         return (
@@ -42,24 +53,29 @@ class Login extends Component {
                     <View style={styles.overlay} />
                     
                     <View style={styles.main}>
-                    <StatusBar backgroundColor="#651428" barStyle="light-content" />
+                    <StatusBar backgroundColor="#65142800" barStyle="light-content" translucent={true}/>
                         <Image source={require("../assets/img/logowhite.png")}
                         style={styles.mainIcon}/>
 
-                        <Text> Suas consultas em um só lugar! </Text>
+                        <Text style={styles.Text}> Suas consultas em um só lugar! </Text>
                     
                         <View style={styles.inputLogin}>
                             <ThemeProvider theme={theme}>
-                                <Input shake={true}  color="#ffffffe6" placeholderTextColor="#ffffffe6" placeholder="Email" onChangeText={email => this.setState({ email })}
+                                <Input defaultValue = "helena.souza@spmedicalgroup.com.br" shake={true}  color="#ffffffe6" placeholderTextColor="#ffffffe6" placeholder="Email" onChangeText={email => this.setState({ email })}
                                 leftIcon={
                                     <Icon name="envelope" size={30} color="#ffffff80" />
                                 }/>
 
-                                <Input  secureTextEntry={true}  placeholderTextColor="#ffffff" password="true" placeholder="Senha" onChangeText={senha => this.setState({ senha })}
+                                <Input secureTextEntry={true} shake={true} placeholderTextColor="#ffffff" password="true" placeholder="Senha" onChangeText={senha => this.setState({ senha })}
                                 leftIcon={
                                     <Icon name="lock" size={30} color="#ffffff80"  textAlign="center"/>
                                 }/>
+                            
+                                <Text style = { {textAlign:"center", color:"red"} } >{this.state.error}</Text>
+ 
+
                             </ThemeProvider>
+                            
                             <TouchableOpacity style={styles.loginbtn} onPress={this._realizarLogin} >
                                 <Text style={styles.logintext}>ENTRAR</Text>
                             </TouchableOpacity>
@@ -82,7 +98,8 @@ const theme = {
       },
       inputStyle: {
           color:"white",
-          fontFamily:"Kodchasan-Light"
+          fontFamily:"Kodchasan-Light",
+          fontSize:16
       },
       inputContainerStyle: {
           borderColor:"#ffffff00",
@@ -104,7 +121,13 @@ const styles = StyleSheet.create({
     mainIcon: {
         height: "21%",
         width: "40%",
-        margin: 10
+        marginTop: 60,
+    },
+    Text : {
+        fontSize:18,
+        color:"#ffffffe6",
+        fontFamily:"Kodchasan-Light",
+        marginBottom:20
     },
     inputLogin: {
         width: "85%",

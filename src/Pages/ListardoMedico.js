@@ -1,6 +1,8 @@
 import React, {Component} from "React";
 import api from "../services/api";
-import {Text, AsyncStorage, FlatList} from "react-native";
+import jwt from "jwt-decode";
+import {Text, AsyncStorage, FlatList, View} from "react-native";
+
 class ListardoMedico extends Component {
 
     static navigationOptions = {
@@ -9,7 +11,7 @@ class ListardoMedico extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dataSource:[] };
+        this.state = { dataSource:[], Nome:"" };
     }
 
     componentDidMount() {
@@ -17,11 +19,13 @@ class ListardoMedico extends Component {
     }
 
     _buscarConsultas = async () => {
-        const token = await AsyncStorage.getItem("userToken");
+        let token = await AsyncStorage.getItem("userToken");
+        const nomedousuario = jwt(token).Nome;
+        this.setState({Nome : nomedousuario});
         const resposta = await api.get("/consulta/listardomedico", {
             headers : {
                 "Content-Type": "application/json",
-                "Authorization" : "Bearer" + token
+                "Authorization" : "Bearer " + token
             }
         });
         const dadosDaApi = resposta.data;
@@ -32,11 +36,11 @@ class ListardoMedico extends Component {
         return (
         
             <View>
-                <Text> Projeto </Text>
+                <Text> Listar do Médico(a), {this.state.Nome} </Text>
                 <View>
                     <FlatList
                         data={this.state.dataSource}
-                        keyExtractor={item => item.Id}
+                        keyExtractor={item => item.id}
                         renderItem={this.renderizaItem}
                     />
                 </View>
@@ -47,15 +51,13 @@ class ListardoMedico extends Component {
     renderizaItem = ({ item }) => (
         <View>
           <View>
-            <Text>{item.IdUsuarioPaciente}</Text>
-            <Text>{item.IdUsuarioMedico}</Text>
-            <Text>{item.IdProntuarioPaciente}</Text>
+            <Text>{item.idUsuarioPaciente}</Text>
+            <Text>{item.idUsuarioMedico}</Text>
+            <Text>{item.idProntuarioPaciente}</Text>
           </View>
         </View>
     );
 
 }
 
-    
-}
 export default ListardoMedico;
