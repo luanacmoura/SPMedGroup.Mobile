@@ -1,7 +1,8 @@
 import React, {Component} from "React";
 import api from "../services/api";
+import logout from "../services/Logout";
 import jwt from "jwt-decode";
-import {Text, AsyncStorage, FlatList, View} from "react-native";
+import {Text, AsyncStorage, FlatList, View, StyleSheet, TouchableOpacity} from "react-native";
 
 class ListardoMedico extends Component {
 
@@ -32,10 +33,18 @@ class ListardoMedico extends Component {
         this.setState({ dataSource: dadosDaApi });
     }
 
+    _realizarLogout = async () => {
+        this.props.navigation.navigate("Sair");
+    }
+
     render() {
         return (
         
             <View>
+                <TouchableOpacity onPress={this._realizarLogout} >
+                    <Text style={styles.logintext}>Sair</Text>
+                </TouchableOpacity>
+
                 <Text> Listar do Médico(a), {this.state.Nome} </Text>
                 <View>
                     <FlatList
@@ -44,6 +53,9 @@ class ListardoMedico extends Component {
                         renderItem={this.renderizaItem}
                     />
                 </View>
+
+
+
             </View>
         
         );
@@ -51,13 +63,35 @@ class ListardoMedico extends Component {
     renderizaItem = ({ item }) => (
         <View>
           <View>
-            <Text>{item.idUsuarioPaciente}</Text>
-            <Text>{item.idUsuarioMedico}</Text>
-            <Text>{item.idProntuarioPaciente}</Text>
+                <Text> Data da consulta: {item.dataConsulta}</Text>
+                <Text> Paciente: {item.idProntuarioPacienteNavigation.nome}</Text>
+                {item.statusConsulta === "Agendada" && <Text style={[styles.statusAg,styles.status]}> {item.statusConsulta} </Text>}
+                {item.statusConsulta === "Cancelada" && <Text style={[styles.statusCan, styles.status]}> {item.statusConsulta} </Text>}
+                {item.statusConsulta === "Realizada" && <Text style={[styles.statusRea, styles.status]}> {item.statusConsulta} </Text>}
+
+                {item.statusConsulta === "Realizada" && <Text> Descrição: {item.descricao} </Text>}
           </View>
         </View>
     );
 
 }
+
+const styles = StyleSheet.create( {
+    status : {
+        width:80,
+        borderRadius:10,
+        textAlign:"center",
+        color:"white"
+    },
+    statusAg : {
+        backgroundColor:"orange"
+    },
+    statusCan: {
+        backgroundColor:"red"
+    },
+    statusRea: {
+        backgroundColor:"green"
+    }
+});
 
 export default ListardoMedico;

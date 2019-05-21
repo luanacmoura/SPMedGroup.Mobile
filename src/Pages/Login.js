@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import Icon from 'react-native-vector-icons/EvilIcons';
+import IconAwe from 'react-native-vector-icons/FontAwesome';
 import jwt from "jwt-decode";
 import { ThemeProvider, Input } from 'react-native-elements';
 import api from "../services/api";
 import {Text, StyleSheet, ImageBackground, View, Image, TouchableOpacity, AsyncStorage, StatusBar} from 'react-native';
-import console = require("console");
 
 class Login extends Component {
     static navigationOptions = {
@@ -16,9 +16,13 @@ class Login extends Component {
         this.state = { email: "", senha: "", error:"" };
     }
 
+    componentDidMount(){
+        this.setState( {error: null})
+    };
+
       _realizarLogin = async () => {
         if (this.state.email.length === 0 || this.state.senha.length === 0) {
-            this.setState({ error: "Preencha usuário e senha para continuar!" });
+            this.setState({ error: "Preencha email e senha para continuar!" });
           }
         else { 
             try {
@@ -40,13 +44,29 @@ class Login extends Component {
                 //Fazer uma tela pra listar todas as consultas pro administrador
             }
         
-        catch {
-                this.setState({ error : "Email ou senha inválidos!"});
+            catch {
+                    this.setState({ error : "Email ou senha inválidos!"});
+            }
         }
-    }
         };
 
     render() {
+        const erro = this.state.error;
+        let msg;
+
+        if (erro === "Preencha email e senha para continuar!") {
+            msg = <Text style = { {textAlign:"center", color:"#ffff99"} }> 
+                <IconAwe name="exclamation-triangle" size={13} color="#ffff99" />
+                <Text style={{marginLeft:15}}> {erro} </Text>
+            </Text>
+        }
+        else if (erro === "Email ou senha inválidos!") {
+            msg = <Text style = { {textAlign:"center", color:"#ff9999"} }> 
+                <IconAwe name="exclamation-triangle" size={13} color="#ff9999" />
+                <Text style={{marginLeft:15}}> {erro} </Text>
+            </Text>
+        }
+
         return (
             <ImageBackground source={require("../assets/img/Bg-login9.png")}
                 style={StyleSheet.absoluteFillObject}>
@@ -61,7 +81,7 @@ class Login extends Component {
                     
                         <View style={styles.inputLogin}>
                             <ThemeProvider theme={theme}>
-                                <Input defaultValue = "helena.souza@spmedicalgroup.com.br" shake={true}  color="#ffffffe6" placeholderTextColor="#ffffffe6" placeholder="Email" onChangeText={email => this.setState({ email })}
+                                <Input selectionColor="#ffffff80" defaultValue = "helena.souza@spmedicalgroup.com.br" shake={true}  color="#ffffffe6" placeholderTextColor="#ffffffe6" placeholder="Email" onChangeText={email => this.setState({ email })}
                                 leftIcon={
                                     <Icon name="envelope" size={30} color="#ffffff80" />
                                 }/>
@@ -71,9 +91,7 @@ class Login extends Component {
                                     <Icon name="lock" size={30} color="#ffffff80"  textAlign="center"/>
                                 }/>
                             
-                                <Text style = { {textAlign:"center", color:"red"} } >{this.state.error}</Text>
- 
-
+                                {msg}
                             </ThemeProvider>
                             
                             <TouchableOpacity style={styles.loginbtn} onPress={this._realizarLogin} >
@@ -94,7 +112,7 @@ const theme = {
         marginBottom:10,
         backgroundColor: '#ffffff33',
         borderRadius:25,
-        paddingHorizontal:0
+        paddingRight:15
       },
       inputStyle: {
           color:"white",
@@ -103,6 +121,10 @@ const theme = {
       },
       inputContainerStyle: {
           borderColor:"#ffffff00",
+          alignItems:"center",
+      },
+      leftIcon: {
+          paddingRight:15
       }
     }
   }
