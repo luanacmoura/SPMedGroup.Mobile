@@ -5,6 +5,7 @@ import jwt from "jwt-decode";
 import { ThemeProvider, Input } from 'react-native-elements';
 import api from "../services/api";
 import {Text, StyleSheet, ImageBackground, View, Image, TouchableOpacity, AsyncStorage, StatusBar} from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 
 class Login extends Component {
     static navigationOptions = {
@@ -13,17 +14,31 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { email: "", senha: "", error:"" };
+        this.state = { email: "", senha: "", netstate:"", error:"" };
+    }
+
+    _verificaNet() {
+        NetInfo.fetch().then(state => {
+            this.setState({netstate : state.isConnected});
+          });
     }
 
     componentDidMount(){
-        this.setState( {error: null})
+        this.setState( {error: null});
+        this._verificaNet();
     };
 
+    componentDidUpdate() {
+        this._verificaNet();
+    }
+
       _realizarLogin = async () => {
-        if (this.state.email.length === 0 || this.state.senha.length === 0) {
+        if (this.state.netstate === false) {
+            this.setState({ error: "Conecte-se a internet!" });
+        }
+        else if (this.state.email.length === 0 || this.state.senha.length === 0) {
             this.setState({ error: "Preencha email e senha para continuar!" });
-          }
+        }
         else { 
             try {
                 const resposta = await api.post("/login", {
@@ -53,10 +68,15 @@ class Login extends Component {
     render() {
         const erro = this.state.error;
         let msg;
-
-        if (erro === "Preencha email e senha para continuar!") {
+        if (erro === "Conecte-se a internet!") {
             msg = <Text style = { {textAlign:"center", color:"#ffff99"} }> 
                 <IconAwe name="exclamation-triangle" size={13} color="#ffff99" />
+                <Text style={{marginLeft:15}}> {erro} </Text>
+            </Text>
+        }
+        else if (erro === "Preencha email e senha para continuar!") {
+            msg = <Text style = { {textAlign:"center", color:"#ffcc99"} }> 
+                <IconAwe name="exclamation-triangle" size={13} color="#ffcc99" />
                 <Text style={{marginLeft:15}}> {erro} </Text>
             </Text>
         }
@@ -74,6 +94,7 @@ class Login extends Component {
                     
                     <View style={styles.main}>
                     <StatusBar backgroundColor="#65142800" barStyle="light-content" translucent={true}/>
+                        
                         <Image source={require("../assets/img/logowhite.png")}
                         style={styles.mainIcon}/>
 
@@ -86,7 +107,7 @@ class Login extends Component {
                                     <Icon name="envelope" size={30} color="#ffffff80" />
                                 }/>
 
-                                <Input secureTextEntry={true} shake={true} placeholderTextColor="#ffffff" password="true" placeholder="Senha" onChangeText={senha => this.setState({ senha })}
+                                <Input onSubmitEditing={this._realizarLogin} selectionColor="#ffffff80" secureTextEntry={true} shake={true} placeholderTextColor="#ffffff" password="true" placeholder="Senha" onChangeText={senha => this.setState({ senha })}
                                 leftIcon={
                                     <Icon name="lock" size={30} color="#ffffff80"  textAlign="center"/>
                                 }/>

@@ -1,5 +1,5 @@
 import React, {Component} from 'React';
-import {AsyncStorage, Text, ActivityIndicator, View} from 'react-native';
+import {AsyncStorage, Text, ActivityIndicator, View, ImageBackground, StyleSheet, StatusBar} from 'react-native';
 
 
 class Logout extends Component {
@@ -18,11 +18,21 @@ class Logout extends Component {
 
     render() {
         return (
-            <View>
-            <ActivityIndicator size="small" color="#00ff00" />
-        <Text style={{color:"red"}}> Saindo.. </Text>
-            </View>
+            <ImageBackground source={require("../assets/img/Bg-login9.png")}
+                style={StyleSheet.absoluteFillObject}>
+                <StatusBar backgroundColor="#65142800" barStyle="light-content" translucent={true}/>
+                <View>
+                    <ActivityIndicator style={styles.center} size={80} color="#ffffff" />
+                </View>
+            </ImageBackground>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    center: {
+        marginTop:"60%"
+    }
+});
+
 export default Logout; 
