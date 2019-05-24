@@ -2,9 +2,8 @@ import React, {Component} from "React";
 import api from "../services/api";
 import jwt from "jwt-decode";
 import Icon from 'react-native-vector-icons/Octicons';
-import Iicon from 'react-native-vector-icons/Ionicons';
 import { Header, ThemeProvider } from 'react-native-elements';
-import {Text, AsyncStorage, FlatList, View, StyleSheet, TouchableOpacity, StatusBar} from "react-native";
+import {Text, AsyncStorage, FlatList, View, StyleSheet, Image} from "react-native";
 
 class ListardoMedico extends Component {
 
@@ -14,7 +13,7 @@ class ListardoMedico extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { dataSource:[], Nome:"" };
+        this.state = { dataSource:['lalala'], Nome:"" };
     }
 
     componentDidMount() {
@@ -32,7 +31,7 @@ class ListardoMedico extends Component {
             }
         });
         const dadosDaApi = resposta.data;
-        this.setState({ dataSource: dadosDaApi });
+        await this.setState({ dataSource: dadosDaApi });
     }
 
     _realizarLogout = async () => {
@@ -50,33 +49,77 @@ class ListardoMedico extends Component {
                     }/>
 
                     <View style = {styles.all}>
-                        <Text> Bem vindo Médico(a), {this.state.Nome} </Text>
+                        <Text style={{fontSize:17, marginBottom:20}}> Bem vindo Médico(a), {this.state.Nome} </Text>
                         <View>
                             <FlatList
                                 data={this.state.dataSource}
                                 keyExtractor={item => item.id}
                                 renderItem={this.renderizaItem}
                             />
+                            <FlatList
+                                data={this.state.dataSource}
+                                keyExtractor={item => item.id}
+                                renderItem={this.renderizaItemRealizada}
+                            />
+                            <FlatList
+                                data={this.state.dataSource}
+                                keyExtractor={item => item.id}
+                                renderItem={this.renderizaItemCancelada}
+                            />
                         </View>
                     </View>
 
+                    {this.state.dataSource == "" &&
+                            <View>
+                                <Image source={require("../assets/img/mocadoerro.png")} style={styles.nothing}/>
+                            </View>
+                    }
                 </ThemeProvider>
             </View>
         
         );
     }
-    renderizaItem = ({ item}) => (
-        <View style={styles.quadrado}>
-          <View>
-                <Text> Data da consulta: {item.dataConsulta}</Text>
-                <Text> Paciente: {item.idProntuarioPacienteNavigation.nome}</Text>
-                <Text> CPF: {item.idProntuarioPacienteNavigation.cpf}</Text>
-                {item.statusConsulta === "Agendada" && <Text style={[styles.statusAg,styles.status]}> {item.statusConsulta} </Text>}
-                {item.statusConsulta === "Cancelada" && <Text style={[styles.statusCan, styles.status]}> {item.statusConsulta} </Text>}
-                {item.statusConsulta === "Realizada" && <Text style={[styles.statusRea, styles.status]}> {item.statusConsulta} </Text>}
 
-                {item.statusConsulta === "Realizada" && <Text> Descrição: {item.descricao} </Text>}
-          </View>
+    renderizaItem = ({item}) => (
+        item.statusConsulta === "Agendada" &&
+        <View style={styles.quadrado}>
+                    <View style={styles.headerquadrado}>
+                        <Text> Paciente: {item.idProntuarioPacienteNavigation.nome}</Text>
+                        <Text style={[styles.statusAg,styles.status]}> {item.statusConsulta} </Text>
+                    </View>
+                <View>
+                        <Text> CPF: {item.idProntuarioPacienteNavigation.cpf}</Text>
+                        <Text> Data da consulta: {item.dataConsulta}</Text>
+                </View>
+        </View>
+    );
+
+    renderizaItemRealizada = ({item}) => (
+        item.statusConsulta === "Realizada" &&
+        <View style={styles.quadrado}>
+                    <View style={styles.headerquadrado}>
+                        <Text> Paciente: {item.idProntuarioPacienteNavigation.nome}</Text>
+                        <Text style={[styles.statusRea, styles.status]}> {item.statusConsulta} </Text>                   
+                    </View>
+                <View>
+                        <Text> CPF: {item.idProntuarioPacienteNavigation.cpf}</Text>
+                        <Text> Data da consulta: {item.dataConsulta}</Text>
+                        {item.statusConsulta === "Realizada" && <Text> Descrição: {item.descricao} </Text>}
+                </View>
+        </View>
+    );
+
+    renderizaItemCancelada = ({item}) => (
+        item.statusConsulta === "Cancelada" &&
+        <View style={styles.quadrado}>
+                    <View style={styles.headerquadrado}>
+                        <Text> Paciente: {item.idProntuarioPacienteNavigation.nome}</Text>
+                        <Text style={[styles.statusCan, styles.status]}> {item.statusConsulta} </Text>
+                    </View>
+                <View>
+                        <Text> CPF: {item.idProntuarioPacienteNavigation.cpf}</Text>
+                        <Text> Data da consulta: {item.dataConsulta}</Text>
+                </View>
         </View>
     );
 
@@ -97,16 +140,23 @@ const theme = {
 
 const styles = StyleSheet.create( {
     quadrado: {
-        borderWidth:1,
-        borderColor:"#303030",
-        borderLeftWidth:6,
-        borderLeftColor:"#ffffff",
+        borderLeftWidth:5,
+        borderLeftColor:"#86BEB5",
+        borderRadius:3,
         marginBottom:20,
-        padding:10
+        padding:10,
+        display:"flex",
+        flexDirection:"column",
+        backgroundColor:"#30303020"
+    },
+    headerquadrado: {
+        display:"flex",
+        flexDirection:"row",
+        justifyContent:"space-between"
     },
     all: {
         paddingHorizontal:20,
-        fontSize:20
+        fontSize:20,
     },
     status : {
         width:80,
@@ -122,6 +172,13 @@ const styles = StyleSheet.create( {
     },
     statusRea: {
         backgroundColor:"green"
+    },
+    nothing: {
+        position:"relative",
+        bottom:0,
+        width:"99%",
+        height:"75%",
+        marginTop:"20%"
     }
 });
 
